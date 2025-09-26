@@ -1,0 +1,1 @@
+# swiss-ai-weeks-hackathon
