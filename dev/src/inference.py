@@ -1,16 +1,28 @@
 from transformers import AutoTokenizer, AutoModelForCausalLM
+# from huggingface_hub import login
 
-tokenizer = AutoTokenizer.from_pretrained("swiss-ai/Apertus-8B-2509")
-model = AutoModelForCausalLM.from_pretrained("swiss-ai/Apertus-8B-2509")
+access_token = ""
+# login(token=access_token)
+model_name = "swiss-ai/Apertus-8B-2509"
+
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForCausalLM.from_pretrained(model_name, token=access_token)
 
 def generate_text(prompt):
+    # Manually format the prompt for models without chat_template
+    text = f"User: {prompt}\nAssistant:"
+    model_inputs = tokenizer([text], return_tensors="pt").to(model.device)
 
-    inputs = tokenizer(prompt, return_tensors="pt")
-    outputs = model.generate(**inputs, max_length=100)
-    return tokenizer.decode(outputs[0], skip_special_tokens=True)
+    # Generate the output
+    generated_ids = model.generate(**model_inputs, max_new_tokens=256)
+
+    # Get and decode the output
+    output_ids = generated_ids[0][len(model_inputs.input_ids[0]) :]
+    result = tokenizer.decode(output_ids, skip_special_tokens=True)
+    return result
 
 def get_news_article(article_folder):
-
+    
 
 
 def get_input(news_article):
