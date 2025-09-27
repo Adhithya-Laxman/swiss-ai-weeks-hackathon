@@ -51,7 +51,7 @@ reliable_news_sources = {
         "ReliefWeb": "https://reliefweb.int/disasters"  # Works well with updated selectors
     },
     "Asia": {
-        "ReliefWeb": "https://reliefweb.int/disasters",  # Works well with updated selectors
+        "ReliefWeb": "https://reliefweb.int/disaster/wf-2025-000163-bol", #"https://reliefweb.int/disasters",  # Works well with updated selectors
         # "India - NDTV Disasters": "https://www.ndtv.com/topic/natural-disasters",
         # "China Daily Disasters": "https://www.chinadaily.com.cn/cndy/2025-09/disasters",
         # "ASEAN Coordinating Centre": "https://ahacentre.org/bulletins/",
