@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disaster Management Chatbot - Mario's Adventure</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .logo span {
+            color: #e74c3c;
+        }
+
+        .back-btn {
+            background: #ff6b35;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.3s;
+            font-weight: bold;
+        }
+
+        .back-btn:hover {
+            background: #e55a2b;
+        }
+
+        .disaster-context {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 1rem;
+            margin: 1rem 2rem;
+            border-radius: 8px;
+            border-left: 4px solid #fdcb6e;
+        }
+
+        .disaster-context h3 {
+            color: #d63031;
+            margin-bottom: 0.5rem;
+        }
+
+        .disaster-context p {
+            color: #2d3436;
+            line-height: 1.5;
+        }
+
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+            background: white;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            background: #fafafa;
+        }
+
+        .message {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 0.75rem 1rem;
+            border-radius: 18px;
+            word-wrap: break-word;
+        }
+
+        .message.user .message-content {
+            background: #007bff;
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message.assistant .message-content {
+            background: white;
+            color: #333;
+            border: 1px solid #e0e0e0;
+            border-bottom-left-radius: 5px;
+        }
+
+        .message-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            margin: 0 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .message.user .message-avatar {
+            background: #007bff;
+            color: white;
+            order: 1;
+        }
+
+        .message.assistant .message-avatar {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .chat-input-container {
+            padding: 1rem;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .chat-input-form {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            outline: none;
+            font-size: 1rem;
+        }
+
+        .chat-input:focus {
+            border-color: #007bff;
+        }
+
+        .send-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .send-btn:hover {
+            background: #0056b3;
+        }
+
+        .send-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .typing-indicator {
+            display: none;
+            padding: 0.75rem 1rem;
+            color: #666;
+            font-style: italic;
+        }
+
+        .suggestions {
+            padding: 1rem;
+            background: #f8f9fa;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .suggestions h4 {
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .suggestion-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .suggestion-chip {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .suggestion-chip:hover {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 0.75rem 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* Markdown formatting styles */
+        .message-content strong {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .message-content em {
+            font-style: italic;
+            color: #7f8c8d;
+        }
+
+        .message-content .chat-header {
+            margin: 10px 0 5px 0;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+
+        .message-content h1.chat-header {
+            font-size: 1.2em;
+            border-bottom: 2px solid #e74c3c;
+            padding-bottom: 5px;
+        }
+
+        .message-content h2.chat-header {
+            font-size: 1.1em;
+            border-bottom: 1px solid #e74c3c;
+            padding-bottom: 3px;
+        }
+
+        .message-content h3.chat-header {
+            font-size: 1em;
+            color: #c0392b;
+        }
+
+        .message-content .list-item {
+            margin: 5px 0;
+            padding-left: 10px;
+        }
+
+        .message-content .list-number {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-right: 8px;
+        }
+
+        .message-content .bullet {
+            color: #e74c3c;
+            margin-right: 8px;
+        }
+
+        .message-content .list-content {
+            line-height: 1.4;
+        }
+
+        .message-content code {
+            background: #f8f9fa;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #e74c3c;
+        }
+
+        .message-content pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 4px solid #e74c3c;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+
+        .message-content pre code {
+            background: none;
+            padding: 0;
+            color: #333;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+            }
+            
+            .chat-container {
+                height: calc(100vh - 60px);
+            }
+            
+            .message-content {
+                max-width: 85%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">🚨 Disaster<span>AI</span> Assistant</div>
+        <a href="/game" class="back-btn">🎮 Back to Mario's Adventure</a>
+    </div>
+
+    <div class="disaster-context">
+        <h3>🎯 Current Mission: {{ disaster_title }}</h3>
+        {% if selected_disaster and selected_disaster.CLASSIFICATION %}
+        <p><strong>Disaster Type:</strong> {{ selected_disaster.CLASSIFICATION }}</p>
+        <p><strong>Estimated Cost:</strong> {{ selected_disaster.PREDICTED_COST }}</p>
+        <p><strong>Time of Occurrence:</strong> {{ selected_disaster.TIME_OF_OCCURENCE }}</p>
+        <p><strong>Details:</strong> {{ selected_disaster.SECTION_CONTENT[:200] }}...</p>
+        {% else %}
+        <p><strong>Context:</strong> {{ disaster_context }}</p>
+        {% endif %}
+    </div>
+
+    <div class="chat-container">
+        <div class="chat-messages" id="chatMessages">
+            <div class="message assistant">
+                <div class="message-avatar">AI</div>
+                <div class="message-content">
+                    {% if selected_disaster and selected_disaster.CLASSIFICATION %}
+                    Hello Mario! 👋 I see you're helping with <strong>{{ disaster_title }}</strong>. 
+                    This is a <strong>{{ selected_disaster.CLASSIFICATION }}</strong> situation that occurred on 
+                    <strong>{{ selected_disaster.TIME_OF_OCCURENCE }}</strong>. 
+                    How can I assist you with the disaster management efforts?
+                    {% else %}
+                    Hello Mario! 👋 I see you're helping with <strong>{{ disaster_title }}</strong>. 
+                    {{ disaster_context }}
+                    How can I assist you with the disaster management efforts?
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="typing-indicator" id="typingIndicator">
+            AI is typing...
+        </div>
+
+        <div class="suggestions">
+            <h4>Quick Questions:</h4>
+            <div class="suggestion-chips" id="suggestionChips">
+                <!-- Suggestions will be loaded here -->
+            </div>
+        </div>
+
+        <div class="chat-input-container">
+            <form class="chat-input-form" id="chatForm">
+                <input 
+                    type="text" 
+                    class="chat-input" 
+                    id="messageInput" 
+                    placeholder="Ask me about disaster management..."
+                    autocomplete="off"
+                >
+                <button type="submit" class="send-btn" id="sendBtn">Send</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const context = {{ context | tojson | safe }};
+        const selectedDisaster = {{ selected_disaster | tojson | safe }};
+        const disasterTitle = "{{ disaster_title }}";
+        const chatMessages = document.getElementById('chatMessages');
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const chatForm = document.getElementById('chatForm');
+        const typingIndicator = document.getElementById('typingIndicator');
+        const suggestionChips = document.getElementById('suggestionChips');
+
+        let chatId = 'game_chat_' + Date.now();
+
+        // Load suggestions based on selected disaster
+        function loadSuggestions() {
+            const suggestions = selectedDisaster ? [
+                `What are the immediate relief needs for ${disasterTitle}?`,
+                `How should we coordinate rescue efforts?`,
+                `What resources are needed for this disaster?`,
+                `Tell me about the recovery timeline`,
+                `How can we prevent similar disasters?`
+            ] : [
+                "What are the current disaster situations?",
+                "How should I plan for emergency response?",
+                "What resources are needed for relief efforts?",
+                "Tell me about disaster recovery strategies",
+                "How to coordinate with emergency services?"
+            ];
+
+            suggestions.forEach(suggestion => {
+                const chip = document.createElement('div');
+                chip.className = 'suggestion-chip';
+                chip.textContent = suggestion;
+                chip.onclick = () => {
+                    messageInput.value = suggestion;
+                    messageInput.focus();
+                };
+                suggestionChips.appendChild(chip);
+            });
+        }
+
+        function addMessage(text, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user' : 'assistant'}`;
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            avatar.textContent = isUser ? 'You' : 'AI';
+            
+            const content = document.createElement('div');
+            content.className = 'message-content';
+            
+            if (isUser) {
+                content.textContent = text;
+            } else {
+                // Format AI responses with markdown-like styling
+                content.innerHTML = formatMarkdown(text);
+            }
+            
+            if (isUser) {
+                messageDiv.appendChild(content);
+                messageDiv.appendChild(avatar);
+            } else {
+                messageDiv.appendChild(avatar);
+                messageDiv.appendChild(content);
+            }
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function formatMarkdown(text) {
+            // Convert markdown-like formatting to HTML
+            let formatted = text
+                // Bold text **text** -> <strong>text</strong>
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                // Italic text *text* -> <em>text</em>
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                // Numbered lists
+                .replace(/^(\d+)\.\s+(.+)$/gm, '<div class="list-item"><span class="list-number">$1.</span> <span class="list-content">$2</span></div>')
+                // Bullet points
+                .replace(/^[-•]\s+(.+)$/gm, '<div class="list-item"><span class="bullet">•</span> <span class="list-content">$1</span></div>')
+                // Headers ### Header -> <h3>Header</h3>
+                .replace(/^###\s+(.+)$/gm, '<h3 class="chat-header">$1</h3>')
+                // Headers ## Header -> <h2>Header</h2>
+                .replace(/^##\s+(.+)$/gm, '<h2 class="chat-header">$1</h2>')
+                // Headers # Header -> <h1>Header</h1>
+                .replace(/^#\s+(.+)$/gm, '<h1 class="chat-header">$1</h1>')
+                // Line breaks
+                .replace(/\n/g, '<br>')
+                // Code blocks ```code``` -> <code>code</code>
+                .replace(/```([^`]+)```/g, '<pre><code>$1</code></pre>')
+                // Inline code `code` -> <code>code</code>
+                .replace(/`([^`]+)`/g, '<code>$1</code>');
+            
+            return formatted;
+        }
+
+        function showTyping() {
+            typingIndicator.style.display = 'block';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function hideTyping() {
+            typingIndicator.style.display = 'none';
+        }
+
+        async function sendMessage(message) {
+            if (!message.trim()) return;
+
+            addMessage(message, true);
+            showTyping();
+            sendBtn.disabled = true;
+
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        chat_id: chatId
+                    })
+                });
+
+                const data = await response.json();
+                hideTyping();
+
+                if (data.error) {
+                    addMessage(`Error: ${data.response}`, false);
+                } else {
+                    addMessage(data.response, false);
+                }
+            } catch (error) {
+                hideTyping();
+                addMessage(`Sorry, there was an error: ${error.message}`, false);
+            } finally {
+                sendBtn.disabled = false;
+                messageInput.focus();
+            }
+        }
+
+        chatForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const message = messageInput.value.trim();
+            if (message) {
+                sendMessage(message);
+                messageInput.value = '';
+            }
+        });
+
+        // Load suggestions on page load
+        loadSuggestions();
+
+        // Focus input on load
+        messageInput.focus();
+    </script>
+</body>
+</html>

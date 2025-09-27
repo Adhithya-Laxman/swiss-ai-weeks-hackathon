@@ -1,6 +1,7 @@
 import os
 import openai
 import pandas as pd
+from fastapi import FastAPI
 # from process_csv import get_ongoing_past_disasters
 '''
 Write this in modular format to return the list of links to the top 5 websites 
@@ -17,6 +18,8 @@ sys_prompts = {
     "EstimateImpact": "Go through the following articles and then estimate the potential impact of the current disaster which can be helpful to the humanitarian aid organizations. The impact can be estimated in terms of number of people affected, budget required for response efforts, etc. Please ensure that you provide only the estimates without any additional commentary or information. The output should be in the format Impact: \n\n",
     "Insights": "You are given "
 }
+
+app = FastAPI()
 
 # For your information, the different disaster data available to you is of cold wave, drought, earthquake, epidemic, Cyclone, fire, flood, heat wave, insect infestation, land slide, storm, snow avalanche, tsunami, volcano.
 
@@ -45,6 +48,7 @@ def get_ongoing_past_disasters(df):
 
     return ongoing_disasters, past_disasters, links_map
 
+@app.get('/chatbot')
 def generate_text(prompt, sys_msg):
 
 
@@ -91,3 +95,7 @@ def get_system_prompt(task, language="English"):
 
 # final_links = list(set(final_links))[:5]
 # print(final_links)
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("swisscom_endpoint:app", host="0.0.0.0", port=8000, reload=True)

@@ -1,0 +1,370 @@
+
+You are an expert disaster analyst. Given the following list of disasters from a CSV file, select the top 5 most relevant ones based on these criteria (prioritize in order):
+
+1. **Geographical closeness** to our location: '.'. Infer location from name, status, or any context (e.g., country/city mentions). Rank closer ones higher.
+2. **Importance of the issue**: Prioritize high-impact disasters (e.g., based on status like 'Ongoing' or 'Alert', scale of event implied in name).
+3. **Recency bias**: Favor more recent events (use 'time' field; assume newer dates are more relevant).
+
+Output only the top 5 in a numbered list, with brief reasoning for each selection. Include name, status, link, and time.
+
+Disaster List:
+- Name: Haiti: Floods - Sep 2025
+  Status: Alert
+  Link: https://reliefweb.int/disaster/fl-2025-000174-hti
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: DR Congo: Ebola Outbreak - Sep 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/ep-2025-000157-cod
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Sierra Leone: Floods - Aug 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/fl-2025-000169-sle
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Afghanistan: Earthquakes - Aug 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/eq-2025-000153-afg
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Yemen: Floods - Aug 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/fl-2025-000151-yem
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Bolivia: Wild Fires - Aug 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/wf-2025-000163-bol
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Cabo Verde: Flash Floods - Aug 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/fl-2025-000147-cpv
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Syria: Heat Wave - Aug 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/ht-2025-000132-syr
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Equatorial Guinea: Floods - Aug 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/fl-2025-000145-gnq
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Somalia: Diphtheria Outbreak - Jul 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/ep-2025-000142-som
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Lao PDR: Floods - Jul 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/fl-2025-000126-lao
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: South Sudan: Floods - Jul 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/fl-2025-000158-ssd
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Congo: Cholera Outbreak - Jul 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/ep-2025-000130-cog
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Nepal: Drought - Jul 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/dr-2025-000125-npl
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Guinea: Floods - Jul 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/fl-2025-000150-gin
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Viet Nam: Floods and Landslides - Jul 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/fl-2025-000129-vnm
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Sudan: Floods - Jul 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/fl-2025-000154-sdn
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Chad: Cholera Outbreak - Jul 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/ep-2025-000149-tcd
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Guatemala: Earthquake - Jul 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/eq-2025-000111-gtm
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Pakistan: Flash Floods - Jun 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/fl-2025-000100-pak
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Honduras: Floods - Jun 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/fl-2025-000112-hnd
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Panama: River Pollution - Jun 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/ac-2025-000098-pan
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Guinea-Bissau: Severe Local Storm - Jun 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/st-2025-000097-gnb
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Venezuela: Floods and Landslides - Jun 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/fl-2025-000110-ven
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Côte d'Ivoire: Cholera Outbreak - Jun 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/ep-2025-000087-civ
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Nigeria: Floods - May 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/fl-2025-000078-nga
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Papua New Guinea: Polio Outbreak - May 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/ep-2025-000107-png
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Ecuador: Yellow Fever Outbreak - May 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/ep-2025-000062-ecu
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Algeria: Floods - May 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/fl-2025-000068-dza
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Zimbabwe: Malaria Outbreak - May 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/ep-2025-000075-zwe
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Kenya: Cholera Outbreak - Apr 2025
+  Status: Alert
+  Link: https://reliefweb.int/disaster/ep-2025-000074-ken
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Myanmar: Earthquake - Mar 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/eq-2025-000043-mmr
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Kyrgyzstan: Measles and Rubella Outbreak - Mar 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/ep-2025-000105-kgz
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Tropical Cyclone Jude - Mar 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/tc-2025-000027-moz
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Argentina: Floods - Mar 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/fl-2025-000036-arg
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Tropical Cyclone Honde - Feb 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/tc-2025-000025-mdg
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Botswana: Floods - Feb 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/fl-2025-000029-bwa
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Pacific: Dengue Outbreak - Feb 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/ep-2025-000053-ton
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Peru: Floods and Landslides - Jan 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/fl-2025-000022
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Angola: Cholera Outbreak - Jan 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/ep-2025-000013-ago
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Ethiopia: Earthquakes - Jan 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/eq-2025-000001-eth
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Vanuatu: Earthquake - Dec 2024
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/eq-2024-000227-vut
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Colombia: Floods - Nov 2024
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/fl-2024-000214-col
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Ghana: Cholera Outbreak - Oct 2024
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/ep-2024-000231-gha
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Namibia: Drought - May 2024
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/dr-2024-000094-nam
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Lesotho: Drought - Apr 2024
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/dr-2024-000071-lso
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Malawi: Drought - Mar 2024
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/dr-2024-000069-mwi
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Zambia: Drought - 2024-2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/dr-2024-000018-zmb
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Niger: Diphtheria Outbreak - Oct 2023
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/ep-2023-000223-ner
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Tanzania: Cholera Outbreak - Jul 2023
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/ep-2023-000224-tza
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Burundi: Cholera Outbreak - Jan 2023
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/ep-2023-000075-bdi
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Cameroon: Cholera Outbreak - Jul 2018
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/ep-2018-000142-cmr
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Pakistan: Flash Floods - Jun 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/fl-2025-000100-pak
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Honduras: Floods - Jun 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/fl-2025-000112-hnd
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Panama: River Pollution - Jun 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/ac-2025-000098-pan
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Guinea-Bissau: Severe Local Storm - Jun 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/st-2025-000097-gnb
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Venezuela: Floods and Landslides - Jun 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/fl-2025-000110-ven
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Côte d'Ivoire: Cholera Outbreak - Jun 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/ep-2025-000087-civ
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Bangladesh: Floods and Landslides - May 2025
+  Status: Past Disaster
+  Link: https://reliefweb.int/disaster/fl-2025-000076-bgd
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Nigeria: Floods - May 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/fl-2025-000078-nga
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Papua New Guinea: Polio Outbreak - May 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/ep-2025-000107-png
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Ecuador: Yellow Fever Outbreak - May 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/ep-2025-000062-ecu
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Algeria: Floods - May 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/fl-2025-000068-dza
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Zimbabwe: Malaria Outbreak - May 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/ep-2025-000075-zwe
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Somalia: Floods - Apr 2025
+  Status: Alert
+  Link: https://reliefweb.int/disaster/ff-2025-000055-som
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Tajikistan: Earthquake - Apr 2025
+  Status: Past Disaster
+  Link: https://reliefweb.int/disaster/eq-2025-000049-tjk
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Kenya: Cholera Outbreak - Apr 2025
+  Status: Alert
+  Link: https://reliefweb.int/disaster/ep-2025-000074-ken
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: DR Congo: Floods - Apr 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/fl-2025-000045-cod
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Myanmar: Earthquake - Mar 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/eq-2025-000043-mmr
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Tanzania: Floods - Mar 2025
+  Status: Past Disaster
+  Link: https://reliefweb.int/disaster/fl-2025-000047-tza
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Kyrgyzstan: Measles and Rubella Outbreak - Mar 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/ep-2025-000105-kgz
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
+- Name: Bolivia: Heavy Rains and Floods - Mar 2025
+  Status: Ongoing
+  Link: https://reliefweb.int/disaster/fl-2025-000038-bol
+  Time: 
+  (Note: Location info may be in name/status; infer closeness to .)
